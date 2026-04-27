@@ -34,7 +34,9 @@ type Resolved struct {
 	SSHAuthSock     bool
 	GitConfig       bool
 	CPU             float64
+	CPUConfigured   bool
 	Memory          string
+	MemoryConfigured bool
 	ExposePort      bool
 }
 
@@ -115,7 +117,9 @@ func Resolve(cfg *config.Config, name string) (*Resolved, error) {
 		SSHAuthSock:     boolWithOverride(cfg.Defaults.SSHAuthSock, ws.SSHAuthSock),
 		GitConfig:       boolPtrWithDefault(cfg.Defaults.GitConfig, ws.GitConfig, true),
 		CPU:             floatWithDefault(cfg.Defaults.CPU, ws.CPU, 2.0),
+		CPUConfigured:   ws.CPU != nil || cfg.Defaults.CPU != nil,
 		Memory:          stringWithDefault(cfg.Defaults.Memory, ws.Memory, "4g"),
+		MemoryConfigured: ws.Memory != nil || cfg.Defaults.Memory != nil,
 		ExposePort:      boolPtrWithDefault(cfg.Defaults.ExposePort, ws.ExposePort, true),
 	}, nil
 }

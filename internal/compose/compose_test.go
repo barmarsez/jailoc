@@ -506,7 +506,9 @@ func TestComposeResourceLimits(t *testing.T) {
 		Port:          4096,
 		Image:         "ubuntu:22.04",
 		Paths:         []string{"/data/workspace"},
+		CPUConfigured: true,
 		CPU:           2.0,
+		MemoryConfigured: true,
 		Memory:        "4g",
 	}
 
@@ -519,7 +521,6 @@ func TestComposeResourceLimits(t *testing.T) {
 	assertContains(t, string(rendered), `memswap_limit: "4g"`)
 	assertContains(t, string(rendered), "cpus: 2")
 	assertContains(t, string(rendered), "mem_reservation: 512m")
-	assertContains(t, string(rendered), "pids_limit: 256")
 }
 
 func TestComposeCustomResourceLimits(t *testing.T) {
@@ -530,7 +531,9 @@ func TestComposeCustomResourceLimits(t *testing.T) {
 		Port:          4096,
 		Image:         "ubuntu:22.04",
 		Paths:         []string{"/data/workspace"},
+		CPUConfigured: true,
 		CPU:           4.0,
+		MemoryConfigured: true,
 		Memory:        "8g",
 	}
 
@@ -556,7 +559,9 @@ func TestComposeResourceLimitsFractionalCPU(t *testing.T) {
 		Port:          4096,
 		Image:         "ubuntu:22.04",
 		Paths:         []string{"/data/workspace"},
+		CPUConfigured: true,
 		CPU:           1.5,
+		MemoryConfigured: true,
 		Memory:        "512m",
 	}
 
@@ -568,6 +573,39 @@ func TestComposeResourceLimitsFractionalCPU(t *testing.T) {
 	assertContains(t, string(rendered), "cpus: 1.5")
 	assertContains(t, string(rendered), `mem_limit: "512m"`)
 	assertContains(t, string(rendered), `memswap_limit: "512m"`)
+}
+
+func TestComposeOmitsResourceLimitsWhenUnset(t *testing.T) {
+	t.Parallel()
+
+	params := ComposeParams{
+		WorkspaceName: "test",
+		Port:          4096,
+		Image:         "ubuntu:22.04",
+		Paths:         []string{"/data/workspace"},
+	}
+
+	rendered, err := GenerateCompose(params)
+	if err != nil {
+		t.Fatalf("GenerateCompose failed: %v", err)
+	}
+
+	out := string(rendered)
+	if strings.Contains(out, "mem_limit:") {
+		t.Fatal("expected mem_limit to be omitted when memory is unset")
+	}
+	if strings.Contains(out, "memswap_limit:") {
+		t.Fatal("expected memswap_limit to be omitted when memory is unset")
+	}
+	if strings.Contains(out, "mem_reservation:") {
+		t.Fatal("expected mem_reservation to be omitted when memory is unset")
+	}
+	if strings.Contains(out, "cpus:") {
+		t.Fatal("expected cpus to be omitted when CPU is unset")
+	}
+	if strings.Contains(out, "pids_limit:") {
+		t.Fatal("expected pids_limit to be omitted by default")
+	}
 }
 
 func TestComposeHealthCheckTimings(t *testing.T) {

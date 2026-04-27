@@ -24,7 +24,9 @@ type ComposeParams struct {
 	SSHKnownHosts    string // host known_hosts path to mount (bound to SSHAuthSock), empty = disabled
 	GitConfig        string // host gitconfig path to mount, empty = disabled
 	CPU              float64
+	CPUConfigured    bool
 	Memory           string
+	MemoryConfigured bool
 	UseDataVolume    bool
 	UseCacheVolume   bool
 	ExposePort       bool

@@ -1197,8 +1197,14 @@ func TestResolveCPUMemory(t *testing.T) {
 			if resolved.CPU != tt.wantCPU {
 				t.Errorf("CPU: got %v, want %v", resolved.CPU, tt.wantCPU)
 			}
+			if got, want := resolved.CPUConfigured, tt.defCPU != nil || tt.wsCPU != nil; got != want {
+				t.Errorf("CPUConfigured: got %v, want %v", got, want)
+			}
 			if resolved.Memory != tt.wantMemory {
 				t.Errorf("Memory: got %q, want %q", resolved.Memory, tt.wantMemory)
+			}
+			if got, want := resolved.MemoryConfigured, tt.defMemory != nil || tt.wsMemory != nil; got != want {
+				t.Errorf("MemoryConfigured: got %v, want %v", got, want)
 			}
 		})
 	}

@@ -62,11 +62,14 @@ services:
       - DAC_READ_SEARCH   # traverse restricted dirs during chown
     stdin_open: true
     tty: true
+{{- if .MemoryConfigured}}
     mem_limit: "{{.Memory}}"
     memswap_limit: "{{.Memory}}"
     mem_reservation: 512m
+{{- end}}
+{{- if .CPUConfigured}}
     cpus: {{printf "%g" .CPU}}
-    pids_limit: 256
+{{- end}}
     networks:
       - jailoc
     entrypoint: ["/usr/local/bin/entrypoint.sh"]
