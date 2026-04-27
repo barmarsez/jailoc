@@ -23,10 +23,8 @@ type ComposeParams struct {
 	SSHAuthSock      string // host socket path to mount, empty = disabled
 	SSHKnownHosts    string // host known_hosts path to mount (bound to SSHAuthSock), empty = disabled
 	GitConfig        string // host gitconfig path to mount, empty = disabled
-	CPU              float64
-	CPUConfigured    bool
-	Memory           string
-	MemoryConfigured bool
+	CPU              *float64
+	Memory           *string
 	UseDataVolume    bool
 	UseCacheVolume   bool
 	ExposePort       bool
@@ -36,6 +34,8 @@ func GenerateCompose(params ComposeParams) ([]byte, error) {
 	tmpl, err := template.New("docker-compose.yml").Funcs(template.FuncMap{
 		"base":      filepath.Base,
 		"yamlQuote": yamlQuote,
+		"derefFloat": derefFloat,
+		"derefString": derefString,
 	}).Parse(embed.ComposeTemplate())
 	if err != nil {
 		return nil, fmt.Errorf("parse compose template: %w", err)
@@ -52,6 +52,20 @@ func GenerateCompose(params ComposeParams) ([]byte, error) {
 func yamlQuote(s string) string {
 	b, _ := json.Marshal(s)
 	return string(b)
+}
+
+func derefFloat(v *float64) float64 {
+	if v == nil {
+		return 0
+	}
+	return *v
+}
+
+func derefString(v *string) string {
+	if v == nil {
+		return ""
+	}
+	return *v
 }
 
 func WriteComposeFile(params ComposeParams, destPath string) error {

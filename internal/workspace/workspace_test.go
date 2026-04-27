@@ -1194,17 +1194,17 @@ func TestResolveCPUMemory(t *testing.T) {
 				t.Fatalf("Resolve failed: %v", err)
 			}
 
-			if resolved.CPU != tt.wantCPU {
-				t.Errorf("CPU: got %v, want %v", resolved.CPU, tt.wantCPU)
+			if resolved.CPU != nil && *resolved.CPU != tt.wantCPU {
+				t.Errorf("CPU: got %v, want %v", *resolved.CPU, tt.wantCPU)
 			}
-			if got, want := resolved.CPUConfigured, tt.defCPU != nil || tt.wsCPU != nil; got != want {
-				t.Errorf("CPUConfigured: got %v, want %v", got, want)
+			if got, want := resolved.CPU != nil, tt.defCPU != nil || tt.wsCPU != nil; got != want {
+				t.Errorf("CPU configured: got %v, want %v", got, want)
 			}
-			if resolved.Memory != tt.wantMemory {
-				t.Errorf("Memory: got %q, want %q", resolved.Memory, tt.wantMemory)
+			if resolved.Memory != nil && *resolved.Memory != tt.wantMemory {
+				t.Errorf("Memory: got %q, want %q", *resolved.Memory, tt.wantMemory)
 			}
-			if got, want := resolved.MemoryConfigured, tt.defMemory != nil || tt.wsMemory != nil; got != want {
-				t.Errorf("MemoryConfigured: got %v, want %v", got, want)
+			if got, want := resolved.Memory != nil, tt.defMemory != nil || tt.wsMemory != nil; got != want {
+				t.Errorf("Memory configured: got %v, want %v", got, want)
 			}
 		})
 	}

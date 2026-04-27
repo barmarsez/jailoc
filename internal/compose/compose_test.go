@@ -7,6 +7,9 @@ import (
 	"testing"
 )
 
+func f64(v float64) *float64 { return &v }
+func str(v string) *string   { return &v }
+
 func TestGenerateComposeSinglePath(t *testing.T) {
 	t.Parallel()
 
@@ -16,8 +19,8 @@ func TestGenerateComposeSinglePath(t *testing.T) {
 		Image:            "ghcr.io/seznam/jailoc:test",
 		Paths:            []string{"/Users/test/work/project"},
 		Env:            nil,
-		CPU:            2.0,
-		Memory:         "4g",
+		CPU:            f64(2.0),
+		Memory:         str("4g"),
 		UseDataVolume:  true,
 		UseCacheVolume: true,
 		ExposePort:     true,
@@ -56,8 +59,8 @@ func TestGenerateComposeMultiplePaths(t *testing.T) {
 			"/repos/web-app",
 		},
 		Env:    nil,
-		CPU:    2.0,
-		Memory: "4g",
+		CPU:    f64(2.0),
+		Memory: str("4g"),
 	}
 
 	out, err := GenerateCompose(params)
@@ -81,8 +84,8 @@ func TestGenerateComposePasswordUsesEnvSubstitution(t *testing.T) {
 		Image:         "ghcr.io/seznam/jailoc:dev",
 		Paths:         []string{"/tmp/work"},
 		Env:           nil,
-		CPU:           2.0,
-		Memory:        "4g",
+		CPU:           f64(2.0),
+		Memory:        str("4g"),
 	}
 
 	out, err := GenerateCompose(params)
@@ -104,8 +107,8 @@ func TestGenerateComposeVolumeNamesIncludeWorkspaceName(t *testing.T) {
 		Image:          "ghcr.io/seznam/jailoc:main",
 		Paths:          []string{"/tmp/repo"},
 		Env:            nil,
-		CPU:            2.0,
-		Memory:         "4g",
+		CPU:            f64(2.0),
+		Memory:         str("4g"),
 		UseDataVolume:  true,
 		UseCacheVolume: true,
 	}
@@ -132,8 +135,8 @@ func TestWriteComposeFileHappyPath(t *testing.T) {
 		Image:            "ghcr.io/seznam/jailoc:test",
 		Paths:            []string{"/tmp/workspace"},
 		Env: nil,
-		CPU:              2.0,
-		Memory:           "4g",
+		CPU:              f64(2.0),
+		Memory:           str("4g"),
 		ExposePort:       true,
 	}
 
@@ -176,8 +179,8 @@ func TestWriteComposeFileErrorPath(t *testing.T) {
 		Image:         "ghcr.io/seznam/jailoc:test",
 		Paths:         []string{"/tmp/workspace"},
 		Env:           nil,
-		CPU:           2.0,
-		Memory:        "4g",
+		CPU:           f64(2.0),
+		Memory:        str("4g"),
 	}
 
 	destPath := "/nonexistent/directory/docker-compose.yml"
@@ -200,8 +203,8 @@ func TestGenerateComposeExposePortFalseOmitsPorts(t *testing.T) {
 		Port:          4111,
 		Image:         "ghcr.io/seznam/jailoc:test",
 		Paths:         []string{"/tmp/workspace"},
-		CPU:           2.0,
-		Memory:        "4g",
+		CPU:           f64(2.0),
+		Memory:        str("4g"),
 		ExposePort:    false,
 	}
 
@@ -238,8 +241,8 @@ func TestGenerateComposeSSHAuthSock(t *testing.T) {
 			Image:            "ghcr.io/seznam/jailoc:test",
 			Paths:            []string{"/tmp/work"},
 			SSHAuthSock: "/run/host-services/ssh-auth.sock",
-			CPU:              2.0,
-			Memory:           "4g",
+			CPU:              f64(2.0),
+			Memory:           str("4g"),
 		}
 
 		out, err := GenerateCompose(params)
@@ -260,8 +263,8 @@ func TestGenerateComposeSSHAuthSock(t *testing.T) {
 			Image:            "ghcr.io/seznam/jailoc:test",
 			Paths:            []string{"/tmp/work"},
 			SSHAuthSock: "",
-			CPU:              2.0,
-			Memory:           "4g",
+			CPU:              f64(2.0),
+			Memory:           str("4g"),
 		}
 
 		out, err := GenerateCompose(params)
@@ -290,8 +293,8 @@ func TestGenerateComposeGitConfig(t *testing.T) {
 			Image:            "ghcr.io/seznam/jailoc:test",
 			Paths:            []string{"/tmp/work"},
 			GitConfig: "/home/user/.gitconfig",
-			CPU:              2.0,
-			Memory:           "4g",
+			CPU:              f64(2.0),
+			Memory:           str("4g"),
 		}
 
 		out, err := GenerateCompose(params)
@@ -311,8 +314,8 @@ func TestGenerateComposeGitConfig(t *testing.T) {
 			Image:            "ghcr.io/seznam/jailoc:test",
 			Paths:            []string{"/tmp/work"},
 			GitConfig: "",
-			CPU:              2.0,
-			Memory:           "4g",
+			CPU:              f64(2.0),
+			Memory:           str("4g"),
 		}
 
 		out, err := GenerateCompose(params)
@@ -338,8 +341,8 @@ func TestGenerateComposeSSHKnownHosts(t *testing.T) {
 			Image:            "ghcr.io/seznam/jailoc:test",
 			Paths:            []string{"/tmp/work"},
 			SSHKnownHosts: "/home/user/.ssh/known_hosts",
-			CPU:              2.0,
-			Memory:           "4g",
+			CPU:              f64(2.0),
+			Memory:           str("4g"),
 		}
 
 		out, err := GenerateCompose(params)
@@ -359,8 +362,8 @@ func TestGenerateComposeSSHKnownHosts(t *testing.T) {
 			Image:            "ghcr.io/seznam/jailoc:test",
 			Paths:            []string{"/tmp/work"},
 			SSHKnownHosts: "",
-			CPU:              2.0,
-			Memory:           "4g",
+			CPU:              f64(2.0),
+			Memory:           str("4g"),
 		}
 
 		out, err := GenerateCompose(params)
@@ -386,8 +389,8 @@ func TestGenerateComposeAllSSHGitEnabled(t *testing.T) {
 		SSHAuthSock:   "/run/host-services/ssh-auth.sock",
 		GitConfig:        "/home/user/.gitconfig",
 		SSHKnownHosts:    "/home/user/.ssh/known_hosts",
-		CPU:              2.0,
-		Memory:           "4g",
+		CPU:              f64(2.0),
+		Memory:           str("4g"),
 	}
 
 	out, err := GenerateCompose(params)
@@ -411,8 +414,8 @@ func TestGenerateComposeEnv(t *testing.T) {
 		Image:            "ghcr.io/seznam/jailoc:test",
 		Paths:            []string{"/tmp/work"},
 		Env:    []string{"MY_VAR=hello", "OTHER=world"},
-		CPU:              2.0,
-		Memory:           "4g",
+		CPU:              f64(2.0),
+		Memory:           str("4g"),
 	}
 
 	out, err := GenerateCompose(params)
@@ -441,8 +444,8 @@ func TestGenerateComposeEmptyEnv(t *testing.T) {
 		Image:            "ghcr.io/seznam/jailoc:test",
 		Paths:            []string{"/tmp/work"},
 		Env:    nil,
-		CPU:              2.0,
-		Memory:           "4g",
+		CPU:              f64(2.0),
+		Memory:           str("4g"),
 	}
 
 	out, err := GenerateCompose(params)
@@ -483,8 +486,8 @@ func TestGenerateComposeJailocEnvVars(t *testing.T) {
 		Image:            "ghcr.io/seznam/jailoc:test",
 		Paths:            []string{"/tmp/work"},
 		Env:              nil,
-		CPU:              2.0,
-		Memory:           "4g",
+		CPU:              f64(2.0),
+		Memory:           str("4g"),
 	}
 
 	out, err := GenerateCompose(params)
@@ -501,15 +504,16 @@ func TestGenerateComposeJailocEnvVars(t *testing.T) {
 func TestComposeResourceLimits(t *testing.T) {
 	t.Parallel()
 
+	cpu := 2.0
+	memory := "4g"
+
 	params := ComposeParams{
 		WorkspaceName: "test",
 		Port:          4096,
 		Image:         "ubuntu:22.04",
 		Paths:         []string{"/data/workspace"},
-		CPUConfigured: true,
-		CPU:           2.0,
-		MemoryConfigured: true,
-		Memory:        "4g",
+		CPU:           &cpu,
+		Memory:        &memory,
 	}
 
 	rendered, err := GenerateCompose(params)
@@ -526,15 +530,16 @@ func TestComposeResourceLimits(t *testing.T) {
 func TestComposeCustomResourceLimits(t *testing.T) {
 	t.Parallel()
 
+	cpu := 4.0
+	memory := "8g"
+
 	params := ComposeParams{
 		WorkspaceName: "test",
 		Port:          4096,
 		Image:         "ubuntu:22.04",
 		Paths:         []string{"/data/workspace"},
-		CPUConfigured: true,
-		CPU:           4.0,
-		MemoryConfigured: true,
-		Memory:        "8g",
+		CPU:           &cpu,
+		Memory:        &memory,
 	}
 
 	rendered, err := GenerateCompose(params)
@@ -554,15 +559,16 @@ func TestComposeCustomResourceLimits(t *testing.T) {
 func TestComposeResourceLimitsFractionalCPU(t *testing.T) {
 	t.Parallel()
 
+	cpu := 1.5
+	memory := "512m"
+
 	params := ComposeParams{
 		WorkspaceName: "test",
 		Port:          4096,
 		Image:         "ubuntu:22.04",
 		Paths:         []string{"/data/workspace"},
-		CPUConfigured: true,
-		CPU:           1.5,
-		MemoryConfigured: true,
-		Memory:        "512m",
+		CPU:           &cpu,
+		Memory:        &memory,
 	}
 
 	rendered, err := GenerateCompose(params)
@@ -616,8 +622,8 @@ func TestComposeHealthCheckTimings(t *testing.T) {
 		Port:          4096,
 		Image:         "ubuntu:22.04",
 		Paths:         []string{"/data/workspace"},
-		CPU:           2.0,
-		Memory:        "4g",
+		CPU:           f64(2.0),
+		Memory:        str("4g"),
 	}
 
 	rendered, err := GenerateCompose(params)
@@ -657,8 +663,8 @@ func TestGenerateComposeNamedVolumeOverriddenByMount(t *testing.T) {
 			},
 			UseDataVolume:  false,
 			UseCacheVolume: true,
-			CPU:            2.0,
-			Memory:         "4g",
+			CPU:            f64(2.0),
+			Memory:         str("4g"),
 		}
 
 		out, err := GenerateCompose(params)
@@ -687,8 +693,8 @@ func TestGenerateComposeNamedVolumeOverriddenByMount(t *testing.T) {
 			},
 			UseDataVolume:  true,
 			UseCacheVolume: false,
-			CPU:            2.0,
-			Memory:         "4g",
+			CPU:            f64(2.0),
+			Memory:         str("4g"),
 		}
 
 		out, err := GenerateCompose(params)
@@ -718,8 +724,8 @@ func TestGenerateComposeNamedVolumeOverriddenByMount(t *testing.T) {
 			},
 			UseDataVolume:  false,
 			UseCacheVolume: false,
-			CPU:            2.0,
-			Memory:         "4g",
+			CPU:            f64(2.0),
+			Memory:         str("4g"),
 		}
 
 		out, err := GenerateCompose(params)
@@ -745,8 +751,8 @@ func TestGenerateComposeNamedVolumeOverriddenByMount(t *testing.T) {
 			Paths:          []string{"/tmp/work"},
 			UseDataVolume:  true,
 			UseCacheVolume: true,
-			CPU:            2.0,
-			Memory:         "4g",
+			CPU:            f64(2.0),
+			Memory:         str("4g"),
 		}
 
 		out, err := GenerateCompose(params)
@@ -818,8 +824,8 @@ func TestGenerateComposeMountsFromParams(t *testing.T) {
 			"/home/user/.config/opencode:/home/agent/.config/opencode:ro",
 			"/home/user/.agents:/home/agent/.agents:ro",
 		},
-		CPU:    2.0,
-		Memory: "4g",
+		CPU:    f64(2.0),
+		Memory: str("4g"),
 	}
 
 	out, err := GenerateCompose(params)
@@ -858,8 +864,8 @@ func TestGenerateComposeMountOrderAfterNamedVolumes(t *testing.T) {
 		},
 		UseDataVolume:  true,
 		UseCacheVolume: true,
-		CPU:            2.0,
-		Memory:         "4g",
+		CPU:            f64(2.0),
+		Memory:         str("4g"),
 	}
 
 	out, err := GenerateCompose(params)

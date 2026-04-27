@@ -33,10 +33,8 @@ type Resolved struct {
 	Env             []string
 	SSHAuthSock     bool
 	GitConfig       bool
-	CPU             float64
-	CPUConfigured   bool
-	Memory          string
-	MemoryConfigured bool
+	CPU             *float64
+	Memory          *string
 	ExposePort      bool
 }
 
@@ -116,10 +114,8 @@ func Resolve(cfg *config.Config, name string) (*Resolved, error) {
 		Env:             mergedEnv,
 		SSHAuthSock:     boolWithOverride(cfg.Defaults.SSHAuthSock, ws.SSHAuthSock),
 		GitConfig:       boolPtrWithDefault(cfg.Defaults.GitConfig, ws.GitConfig, true),
-		CPU:             floatWithDefault(cfg.Defaults.CPU, ws.CPU, 2.0),
-		CPUConfigured:   ws.CPU != nil || cfg.Defaults.CPU != nil,
-		Memory:          stringWithDefault(cfg.Defaults.Memory, ws.Memory, "4g"),
-		MemoryConfigured: ws.Memory != nil || cfg.Defaults.Memory != nil,
+		CPU:             floatPtrWithOverride(cfg.Defaults.CPU, ws.CPU),
+		Memory:          stringPtrWithOverride(cfg.Defaults.Memory, ws.Memory),
 		ExposePort:      boolPtrWithDefault(cfg.Defaults.ExposePort, ws.ExposePort, true),
 	}, nil
 }
@@ -282,6 +278,13 @@ func floatWithDefault(defaultVal *float64, override *float64, fallback float64) 
 	return fallback
 }
 
+func floatPtrWithOverride(defaultVal *float64, override *float64) *float64 {
+	if override != nil {
+		return override
+	}
+	return defaultVal
+}
+
 func stringWithDefault(defaultVal *string, override *string, fallback string) string {
 	if override != nil {
 		return *override
@@ -290,4 +293,11 @@ func stringWithDefault(defaultVal *string, override *string, fallback string) st
 		return *defaultVal
 	}
 	return fallback
+}
+
+func stringPtrWithOverride(defaultVal *string, override *string) *string {
+	if override != nil {
+		return override
+	}
+	return defaultVal
 }
